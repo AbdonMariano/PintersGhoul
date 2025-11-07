@@ -177,6 +177,7 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
         {showImageDetail && selectedPin ? (
           <ImageDetailScreen
             pin={selectedPin}
+            visible={showImageDetail}
             onBack={handleCloseImageDetail}
             onLike={() => handleLike(selectedPin.id)}
             onSave={() => handleSave(selectedPin.id)}

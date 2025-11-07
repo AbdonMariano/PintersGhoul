@@ -10,6 +10,8 @@ import {
   Alert,
   Animated,
   Share,
+  Modal,
+  StatusBar,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/Colors';
@@ -28,6 +30,7 @@ interface Pin {
 
 interface ImageDetailScreenProps {
   pin: Pin;
+  visible: boolean;
   onBack: () => void;
   onLike: (id: string) => void;
   onSave: (id: string) => void;
@@ -38,6 +41,7 @@ const { width, height } = Dimensions.get('window');
 
 export default function ImageDetailScreen({
   pin,
+  visible,
   onBack,
   onLike,
   onSave,
@@ -95,11 +99,18 @@ export default function ImageDetailScreen({
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <LinearGradient
-        colors={[Colors.gradientStart, Colors.gradientEnd]}
-        style={styles.gradient}
-      >
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onBack}
+    >
+      <StatusBar barStyle="light-content" backgroundColor={Colors.background} />
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+        <LinearGradient
+          colors={[Colors.gradientStart, Colors.gradientEnd]}
+          style={styles.gradient}
+        >
         <View style={styles.header}>
           <AnimatedButton
             onPress={onBack}
@@ -116,8 +127,8 @@ export default function ImageDetailScreen({
             <ScrollView
               maximumZoomScale={3}
               minimumZoomScale={1}
-              contentContainerStyle={{ flex: 1 }}
-              style={{ width: '100%', height: height * 0.5 }}
+              contentContainerStyle={styles.imageScrollContent}
+              style={styles.imageScrollView}
             >
               {typeof pin.imageUri === 'string' && pin.imageUri ? (
                 <Image 
@@ -232,6 +243,7 @@ export default function ImageDetailScreen({
         </ScrollView>
       </LinearGradient>
     </Animated.View>
+    </Modal>
   );
 }
 
@@ -273,15 +285,22 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'relative',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
+    width: width,
+    height: height * 0.6,
+    backgroundColor: Colors.background,
+  },
+  imageScrollView: {
+    width: '100%',
+    height: '100%',
+  },
+  imageScrollContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: '100%',
-    height: height * 0.5,
-    resizeMode: 'cover',
+    width: width,
+    height: height * 0.6,
   },
   imageOverlay: {
     position: 'absolute',
@@ -424,6 +443,8 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     flex: 1,
+    width: width,
+    height: height * 0.6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.surface,

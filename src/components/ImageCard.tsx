@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300,
+    aspectRatio: 0.75, // Proporción 3:4 para dar más altura
     borderRadius: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
