@@ -2,6 +2,9 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import HomeScreen from '../src/screens/HomeScreen';
 
+jest.mock('../src/components/AnimatedButton', () => (props: any) => <button {...props} />);
+jest.mock('../src/components/BoardPickerModal', () => () => null);
+
 jest.useFakeTimers();
 
 test('HomeScreen renders with default pins', () => {

@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    aspectRatio: 0.75, // Proporción 3:4 para dar más altura
+    height: 300,
     borderRadius: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionIcon: {
-    fontSize: 18,
+    fontSize: 20,
     color: Colors.text,
   },
   bottomInfo: {
@@ -273,23 +273,25 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     flexWrap: 'wrap',
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    gap: 8,
   },
   actionItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 40,
-    flex: 1,
-    maxWidth: 60,
-    paddingVertical: 4,
+    minWidth: 50,
+    paddingVertical: 6,
+    paddingHorizontal: 4,
   },
   actionText: {
     color: Colors.text,
-    fontSize: 11,
-    marginTop: 2,
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '600',
   },
   likedIcon: {
     color: Colors.primary,

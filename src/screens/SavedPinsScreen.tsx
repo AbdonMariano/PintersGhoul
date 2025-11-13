@@ -14,17 +14,7 @@ import BackButton from '../components/BackButton';
 import RefreshButton from '../components/RefreshButton';
 import { Colors } from '../constants/Colors';
 import { SamplePins } from '../constants/Images';
-
-interface Pin {
-  id: string;
-  imageUri: string;
-  title: string;
-  description: string;
-  author: string;
-  likes: number;
-  isLiked: boolean;
-  isSaved: boolean;
-}
+import { Pin } from '../types/Pin';
 
 export default function SavedPinsScreen({ onBack }: { onBack: () => void }) {
   const [savedPins, setSavedPins] = useState<Pin[]>(SamplePins.filter(pin => pin.isSaved));

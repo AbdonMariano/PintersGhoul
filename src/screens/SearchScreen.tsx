@@ -20,17 +20,7 @@ import { Colors } from '../constants/Colors';
 import { SamplePins } from '../constants/Images';
 import { SearchService } from '../services/SearchService';
 import { RecommendationService } from '../services/RecommendationService';
-
-interface Pin {
-  id: string;
-  imageUri: string;
-  title: string;
-  description: string;
-  author: string;
-  likes: number;
-  isLiked: boolean;
-  isSaved: boolean;
-}
+import { Pin } from '../types/Pin';
 
 export default function SearchScreen({ onBack }: { onBack: () => void }) {
   const [searchQuery, setSearchQuery] = useState('');

@@ -31,6 +31,7 @@ interface OptionsModalProps {
   onDownload: (pin: Pin) => void;
   onHide: (pin: Pin) => void;
   onReport: (pin: Pin) => void;
+  onAddToBoard?: (pin: Pin) => void;
 }
 
 export default function OptionsModal({
@@ -43,6 +44,7 @@ export default function OptionsModal({
   onDownload,
   onHide,
   onReport,
+  onAddToBoard,
 }: OptionsModalProps) {
   if (!pin) return null;
 
@@ -81,6 +83,15 @@ export default function OptionsModal({
             >
               <Text style={styles.optionText}>Compartir este Pin</Text>
             </TouchableOpacity>
+
+              {onAddToBoard && (
+                <TouchableOpacity 
+                  style={styles.option}
+                  onPress={() => handleAction(() => onAddToBoard(pin))}
+                >
+                  <Text style={styles.optionText}>Guardar en un tablero 📌</Text>
+                </TouchableOpacity>
+              )}
             
             <TouchableOpacity 
               style={styles.option}

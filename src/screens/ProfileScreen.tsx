@@ -11,38 +11,32 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ImageCard from '../components/ImageCard';
+import BackButton from '../components/BackButton';
+import AnimatedButton from '../components/AnimatedButton';
+import EditProfileModal from '../components/EditProfileModal';
+import BoardPickerModal from '../components/BoardPickerModal';
 import { Colors } from '../constants/Colors';
 import { SamplePins } from '../constants/Images';
+import { Pin } from '../types/Pin';
+import { BoardService } from '../services/BoardService';
+import { AuthService } from '../services/AuthService';
 
-interface Pin {
-  id: string;
-  imageUri: string;
-  title: string;
-  description: string;
-  author: string;
-  likes: number;
-  isLiked: boolean;
-  isSaved: boolean;
-}
-
-export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string) => void }) {
+export default function ProfileScreen({ onTabPress, onBack }: { onTabPress: (tab: string) => void; onBack?: () => void }) {
   const [activeTab, setActiveTab] = useState('pins');
   const [userPins, setUserPins] = useState<Pin[]>(SamplePins.slice(0, 3));
   const [savedPins, setSavedPins] = useState<Pin[]>(SamplePins.filter(pin => pin.isSaved));
+  const [boards, setBoards] = useState(BoardService.getAllBoards());
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [username, setUsername] = useState('GhoulUser');
+  const [bio, setBio] = useState('Fanático de Tokyo Ghoul | Arte Digital | Cosplay');
 
   const userStats = {
     followers: 1250,
     following: 89,
     pins: userPins.length,
-    boards: 12,
+    boards: boards.length,
   };
 
-  const boards = [
-    { id: '1', name: 'Kaneki Collection', pinCount: 45, coverImage: SamplePins[0].imageUri },
-    { id: '2', name: 'Tokyo Ghoul Art', pinCount: 32, coverImage: SamplePins[1].imageUri },
-    { id: '3', name: 'Ghoul Cosplay', pinCount: 28, coverImage: SamplePins[2].imageUri },
-    { id: '4', name: 'Manga Panels', pinCount: 67, coverImage: SamplePins[3].imageUri },
-  ];
 
   const handleLike = (id: string) => {
     setUserPins(prevPins =>
@@ -71,7 +65,22 @@ export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string
   };
 
   const handleEditProfile = () => {
-    Alert.alert('Editar Perfil', 'Funcionalidad de edición de perfil');
+    setShowEditProfile(true);
+  };
+
+  const handleSaveProfile = async (newUsername: string, newBio: string) => {
+    setUsername(newUsername);
+    setBio(newBio);
+    // Actualizar en AuthService
+    const result = await AuthService.updateProfile({ 
+      displayName: newUsername, 
+      bio: newBio 
+    });
+    if (result.success) {
+      Alert.alert('¡Perfil actualizado!', 'Tus cambios se han guardado correctamente.');
+    } else {
+      Alert.alert('Error', result.error || 'No se pudo actualizar el perfil.');
+    }
   };
 
   const handleSettings = () => {
@@ -83,7 +92,24 @@ export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string
   };
 
   const handleCreateBoard = () => {
-    Alert.alert('Crear Tablero', 'Funcionalidad de crear tablero');
+    Alert.prompt(
+      'Crear Tablero',
+      'Nombre del tablero:',
+      (name) => {
+        if (name && name.trim()) {
+          const newBoard = BoardService.createBoard({
+            name: name.trim(),
+            description: 'Tablero de Tokyo Ghoul',
+            coverImage: 'https://i.pinimg.com/564x/8a/4b/2a/8a4b2a1c3f5e7d9b8c6a4e2f1d3c5b7a.jpg',
+            isPrivate: false,
+            collaborators: [],
+            category: 'general'
+          });
+          setBoards(BoardService.getAllBoards());
+          Alert.alert('¡Éxito!', 'Tablero creado correctamente');
+        }
+      }
+    );
   };
 
   const handleImagePress = (pin: Pin) => {
@@ -158,14 +184,15 @@ export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string
       >
         <View style={styles.content}>
         <View style={styles.header}>
+          {onBack && <BackButton onPress={onBack} />}
           <Text style={styles.title}>Perfil</Text>
           <View style={styles.headerButtons}>
-            <TouchableOpacity style={styles.headerButton} onPress={handleBoards}>
+            <AnimatedButton style={styles.headerButton} onPress={handleBoards}>
               <Text style={styles.headerButtonIcon}>📌</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerButton} onPress={handleSettings}>
+            </AnimatedButton>
+            <AnimatedButton style={styles.headerButton} onPress={handleSettings}>
               <Text style={styles.headerButtonIcon}>⚙️</Text>
-            </TouchableOpacity>
+            </AnimatedButton>
           </View>
         </View>
 
@@ -175,13 +202,13 @@ export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string
                 source={{ uri: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop' }}
                 style={styles.avatar}
               />
-              <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+              <AnimatedButton style={styles.editButton} onPress={handleEditProfile}>
                 <Text style={styles.editButtonText}>Editar</Text>
-              </TouchableOpacity>
+              </AnimatedButton>
             </View>
 
             <Text style={styles.username}>GhoulUser</Text>
-            <Text style={styles.bio}>Fanático de Tokyo Ghoul | Arte Digital | Cosplay</Text>
+            <Text style={styles.bio}>{bio}</Text>
 
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
@@ -204,45 +231,50 @@ export default function ProfileScreen({ onTabPress }: { onTabPress: (tab: string
           </View>
 
           <View style={styles.tabsContainer}>
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'pins' && styles.activeTab]}
-              onPress={() => setActiveTab('pins')}
-            >
-              <Text style={[styles.tabText, activeTab === 'pins' && styles.activeTabText]}>
-                Pins
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'boards' && styles.activeTab]}
-              onPress={() => setActiveTab('boards')}
-            >
-              <Text style={[styles.tabText, activeTab === 'boards' && styles.activeTabText]}>
-                Tableros
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'saved' && styles.activeTab]}
-              onPress={() => setActiveTab('saved')}
-            >
-              <Text style={[styles.tabText, activeTab === 'saved' && styles.activeTabText]}>
-                Guardados
-              </Text>
-            </TouchableOpacity>
+            <View style={[styles.tab, activeTab === 'pins' && styles.activeTab]}>
+              <AnimatedButton onPress={() => setActiveTab('pins')}>
+                <Text style={[styles.tabText, activeTab === 'pins' && styles.activeTabText]}>
+                  Pins
+                </Text>
+              </AnimatedButton>
+            </View>
+            <View style={[styles.tab, activeTab === 'boards' && styles.activeTab]}>
+              <AnimatedButton onPress={() => setActiveTab('boards')}>
+                <Text style={[styles.tabText, activeTab === 'boards' && styles.activeTabText]}>
+                  Tableros
+                </Text>
+              </AnimatedButton>
+            </View>
+            <View style={[styles.tab, activeTab === 'saved' && styles.activeTab]}>
+              <AnimatedButton onPress={() => setActiveTab('saved')}>
+                <Text style={[styles.tabText, activeTab === 'saved' && styles.activeTabText]}>
+                  Guardados
+                </Text>
+              </AnimatedButton>
+            </View>
           </View>
 
           {renderTabContent()}
 
           {activeTab === 'boards' && (
-            <TouchableOpacity style={styles.createBoardButton} onPress={handleCreateBoard}>
+            <AnimatedButton style={styles.createBoardButton} onPress={handleCreateBoard}>
               <LinearGradient
                 colors={[Colors.redGradientStart, Colors.redGradientEnd]}
                 style={styles.createBoardGradient}
               >
                 <Text style={styles.createBoardText}>+ Crear Tablero</Text>
               </LinearGradient>
-            </TouchableOpacity>
+            </AnimatedButton>
           )}
         </View>
+
+        <EditProfileModal
+          visible={showEditProfile}
+          onClose={() => setShowEditProfile(false)}
+          currentUsername={username}
+          currentBio={bio}
+          onSave={handleSaveProfile}
+        />
       </LinearGradient>
     </View>
   );

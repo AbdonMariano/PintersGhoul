@@ -16,9 +16,11 @@ import ImageDetailScreen from './ImageDetailScreen';
 import FloatingActionButton from '../components/FloatingActionButton';
 import IdeaPinCreator from '../components/IdeaPinCreator';
 import UploadScreen from '../components/UploadScreen';
+import BoardPickerModal from '../components/BoardPickerModal';
 import { Colors } from '../constants/Colors';
 import { SamplePins, LocalPins } from '../constants/Images';
 import { DownloadService } from '../services/DownloadService';
+import { BoardService } from '../services/BoardService';
 
 interface Pin {
   id: string;
@@ -46,6 +48,8 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
   const [activeTab, setActiveTab] = useState('home');
   const [showIdeaPinCreator, setShowIdeaPinCreator] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+  const [showBoardPicker, setShowBoardPicker] = useState(false);
+  const [pinToSave, setPinToSave] = useState<Pin | null>(null);
 
   // Handlers para Like y Save
   const handleLike = (pinId?: string) => {
@@ -123,6 +127,20 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
     }
   };
 
+  const handleAddToBoard = (pin: Pin) => {
+    setPinToSave(pin);
+    setShowBoardPicker(true);
+  };
+
+  const handleBoardSelected = (board: any) => {
+    if (pinToSave) {
+      BoardService.addPinToBoard(board.id, pinToSave.id);
+      Alert.alert('¡Guardado!', `Pin guardado en "${board.name}"`);
+    }
+    setShowBoardPicker(false);
+    setPinToSave(null);
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={[Colors.gradientStart, Colors.gradientEnd]} style={styles.gradient}>
@@ -170,6 +188,7 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
             onDownload={() => handleDownload(selectedPin)} // Modificación aquí
             onHide={() => {}}
             onReport={() => {}}
+            onAddToBoard={() => handleAddToBoard(selectedPin)}
           />
         ) : null}
 
@@ -216,6 +235,12 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
             onCancel={handleCancelUpload}
           />
         )}
+
+        <BoardPickerModal
+          visible={showBoardPicker}
+          onClose={() => { setShowBoardPicker(false); setPinToSave(null); }}
+          onBoardSelected={handleBoardSelected}
+        />
       </LinearGradient>
     </View>
   );
