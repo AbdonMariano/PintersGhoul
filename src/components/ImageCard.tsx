@@ -31,9 +31,12 @@ interface ImageCardProps {
   onSave: (id: string) => void;
   onShowOptions: (pin: Pin) => void;
   onImagePress: (pin: Pin) => void;
+  height?: number; // Altura dinámica para masonry layout
 }
 
-export default function ImageCard({ pin, onLike, onSave, onShowOptions, onImagePress }: ImageCardProps) {
+export default function ImageCard({ pin, onLike, onSave, onShowOptions, onImagePress, height }: ImageCardProps) {
+  // Altura dinámica basada en el ID del pin para variación
+  const dynamicHeight = height || (200 + (parseInt(pin.id, 10) % 5) * 50);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showShopTheLook, setShowShopTheLook] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -88,19 +91,19 @@ export default function ImageCard({ pin, onLike, onSave, onShowOptions, onImageP
         {typeof pin.imageUri === 'string' && pin.imageUri ? (
           <Image 
             source={{ uri: pin.imageUri }} 
-            style={styles.image}
+            style={[styles.image, { height: dynamicHeight }]}
             resizeMode="cover"
             onError={(e) => console.warn('[ImageCard] Image load error:', e.nativeEvent.error)}
           />
         ) : typeof pin.imageUri === 'number' ? (
           <Image 
             source={pin.imageUri}
-            style={styles.image}
+            style={[styles.image, { height: dynamicHeight }]}
             resizeMode="cover"
             onError={(e) => console.warn('[ImageCard] Image load error (local):', e.nativeEvent.error)}
           />
         ) : (
-          <View style={[styles.image, { alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.surface }]}>
+          <View style={[styles.image, { height: dynamicHeight, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.surface }]}>
             <Text style={{ color: Colors.textSecondary }}>Imagen no disponible</Text>
           </View>
         )}
@@ -205,17 +208,16 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.surface,
     borderRadius: 12,
-    margin: 8,
     overflow: 'hidden',
     shadowColor: Colors.ghoulBlack,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+    marginBottom: 0, // Eliminado margin para que MasonryLayout controle el spacing
   },
   image: {
     width: '100%',
-    height: 300,
     borderRadius: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },

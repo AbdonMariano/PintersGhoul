@@ -3,13 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ImageCard from '../components/ImageCard';
+import MasonryLayout from '../components/MasonryLayout';
 import OptionsModal from '../components/OptionsModal';
 import BottomNavigation from '../components/BottomNavigation';
 import ImageDetailScreen from './ImageDetailScreen';
@@ -154,10 +153,10 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
           </View>
         </View>
 
-        {/* Lista de Pines */}
-        <FlatList
+        {/* Lista de Pines con Masonry Layout */}
+        <MasonryLayout
           data={localPins}
-          renderItem={({ item }) => (
+          renderItem={(item) => (
             <ImageCard
               pin={item}
               onLike={() => handleLike(item.id)}
@@ -166,14 +165,7 @@ export default function HomeScreen({ pins = [], onUpload = () => {}, onTabPress 
               onImagePress={() => handleImagePress(item)}
             />
           )}
-          keyExtractor={(item) => item.id}
           numColumns={2}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          removeClippedSubviews={true}
-          maxToRenderPerBatch={6}
-          windowSize={5}
-          initialNumToRender={4}
         />
 
         {/* Modal de opciones */}
@@ -301,12 +293,5 @@ const styles = StyleSheet.create({
     color: Colors.text,
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  list: {
-    paddingHorizontal: 16,
-    paddingBottom: 120, // Más espacio para navegación inferior
-    paddingTop: 8,
-    minHeight: '100%',
-    gap: 12,
   },
 });
