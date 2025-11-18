@@ -7,7 +7,7 @@
 (function() {
   'use strict';
   
-  var g = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : this);
+  const g = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : this);
   
   // 1. CRÍTICO: global.require
   if (typeof g.require === 'undefined') {

@@ -4,6 +4,7 @@
     "strict": true,
     "baseUrl": "./",
     "types": ["jest", "node"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,

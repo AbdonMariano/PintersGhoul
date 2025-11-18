@@ -23,7 +23,6 @@ type Screen = 'login' | 'register' | 'home' | 'today' | 'following' | 'search' |
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('login');
-  const [pins, setPins] = useState<any[]>([]);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
 
   // Verificar si hay sesión activa al iniciar
@@ -67,17 +66,8 @@ export default function App() {
   };
 
   const handleUploadComplete = (imageUri: string, title: string, description: string) => {
-    const newPin = {
-      id: Date.now().toString(),
-      imageUri,
-      title,
-      description,
-      author: 'Usuario Actual',
-      likes: 0,
-      isLiked: false,
-      isSaved: false,
-    };
-    setPins(prev => [newPin, ...prev]);
+    // El pin se guarda directamente en HomeScreen a través de su propio estado
+    // No necesitamos manejar esto aquí
     setCurrentScreen('home');
   };
 
@@ -111,6 +101,10 @@ export default function App() {
       case 'profile':
         setCurrentScreen('profile');
         break;
+      case 'logout':
+        // Manejar cierre de sesión
+        setCurrentScreen('login');
+        break;
       default:
         break;
     }
@@ -123,7 +117,7 @@ export default function App() {
       case 'register':
         return <RegisterScreen onRegister={handleRegister} onBackToLogin={handleBackToLogin} />;
       case 'home':
-        return <HomeScreen pins={pins} onUpload={handleUpload} onTabPress={handleTabPress} />;
+        return <HomeScreen onUpload={handleUpload} onTabPress={handleTabPress} />;
       case 'today':
         return <TodayScreen onBack={() => setCurrentScreen('home')} />;
       case 'following':

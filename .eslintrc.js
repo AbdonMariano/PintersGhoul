@@ -18,7 +18,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
   },
   env: {
-    'react-native/react-native': true,
+    'es6': true,
     node: true,
     jest: true,
   },

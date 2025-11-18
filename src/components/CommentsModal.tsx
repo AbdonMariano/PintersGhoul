@@ -288,23 +288,25 @@ export default function CommentsModal({
               <Image source={pinImage} style={styles.pinImage} />
             ) : null}
           </View>
-
-          <FlatList
-            data={comments}
-            renderItem={renderComment}
-            keyExtractor={item => item.id}
-            style={styles.commentsList}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={styles.emptyContainer}>
-                <Text style={styles.emptyIcon}>💬</Text>
-                <Text style={styles.emptyTitle}>No hay comentarios</Text>
-                <Text style={styles.emptySubtitle}>
-                  Sé el primero en comentar
-                </Text>
-              </View>
-            }
-          />
+          <View style={styles.listWrapper}>
+            <FlatList
+              data={comments}
+              renderItem={renderComment}
+              keyExtractor={item => item.id}
+              style={styles.commentsList}
+              contentContainerStyle={comments.length === 0 ? styles.emptyContentContainer : undefined}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyIcon}>💬</Text>
+                  <Text style={styles.emptyTitle}>No hay comentarios</Text>
+                  <Text style={styles.emptySubtitle}>
+                    Sé el primero en comentar
+                  </Text>
+                </View>
+              }
+            />
+          </View>
 
           <View style={styles.inputContainer}>
             <TextInput
@@ -342,6 +344,11 @@ const styles = StyleSheet.create({
     width: '95%',
     maxHeight: '90%',
     overflow: 'hidden',
+    flex: 1,
+  },
+  listWrapper: {
+    flex: 1,
+    paddingBottom: 10,
   },
   header: {
     flexDirection: 'row',
@@ -385,6 +392,11 @@ const styles = StyleSheet.create({
   },
   commentsList: {
     flex: 1,
+    paddingHorizontal: 20,
+  },
+  emptyContentContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   commentContainer: {

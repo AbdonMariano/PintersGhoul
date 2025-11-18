@@ -26,4 +26,13 @@ export const Colors = {
   gradientEnd: '#2D3748',
   redGradientStart: '#E53E3E',
   redGradientEnd: '#C53030',
+  
+  // Pinterest Light Theme (para web/desktop)
+  pinterestBackground: '#FFFFFF',
+  pinterestSurface: '#FFFFFF',
+  pinterestText: '#211922',
+  pinterestTextSecondary: '#5F5F5F',
+  pinterestBorder: '#E9E9E9',
+  pinterestHover: '#F1F1F1',
+  pinterestRed: '#E60023',
 };

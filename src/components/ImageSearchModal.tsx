@@ -53,16 +53,14 @@ export default function ImageSearchModal({ visible, onClose, onSearchResults }: 
     if (!selectedImage) return;
 
     setIsSearching(true);
-    
-    // Simulate image search API call
-    setTimeout(() => {
-      const mockResults = [
-        {
-          id: '1',
-          imageUri: 'https://i.pinimg.com/564x/8a/4b/2a/8a4b2a1c3f5e7d9b8c6a4e2f1d3c5b7a.jpg',
-          title: 'Kaneki Ken - Similar Image',
-          description: 'Imagen similar encontrada',
-          author: 'AI Search',
+    // Simulación instantánea de resultados de búsqueda de imágenes
+    const mockResults = [
+      {
+        id: '1',
+        imageUri: 'https://i.pinimg.com/564x/8a/4b/2a/8a4b2a1c3f5e7d9b8c6a4e2f1d3c5b7a.jpg',
+        title: 'Kaneki Ken - Similar Image',
+        description: 'Imagen similar encontrada',
+        author: 'AI Search',
           likes: 42,
           isLiked: false,
           isSaved: false,
@@ -84,7 +82,6 @@ export default function ImageSearchModal({ visible, onClose, onSearchResults }: 
       onSearchResults(mockResults);
       setIsSearching(false);
       onClose();
-    }, 2000);
   };
 
   const handleClose = () => {

@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   USER_CREDENTIALS: 'PinteresGhoul.credentials',
   SAVED_PINS: '@PinteresGhoul:savedPins',
   USER_PINS: '@PinteresGhoul:userPins',
+  USER_PINS_PREFIX: '@PinteresGhoul:userPins:', // Para pines por usuario
   APP_SETTINGS: '@PinteresGhoul:settings',
 };
 
@@ -85,6 +86,31 @@ export class StorageService {
       return pinsData ? JSON.parse(pinsData) : [];
     } catch (error) {
       console.error('Error getting user pins:', error);
+      return [];
+    }
+  }
+
+  // Guardar pins de un usuario específico (por userId)
+  static async saveUserPinsByUserId(userId: string, pins: any[]): Promise<void> {
+    try {
+      const key = `${STORAGE_KEYS.USER_PINS_PREFIX}${userId}`;
+      await AsyncStorage.setItem(key, JSON.stringify(pins));
+      console.log(`[StorageService] Pines guardados para usuario ${userId}:`, pins.length);
+    } catch (error) {
+      console.error(`Error saving pins for user ${userId}:`, error);
+    }
+  }
+
+  // Obtener pins de un usuario específico (por userId)
+  static async getUserPinsByUserId(userId: string): Promise<any[]> {
+    try {
+      const key = `${STORAGE_KEYS.USER_PINS_PREFIX}${userId}`;
+      const pinsData = await AsyncStorage.getItem(key);
+      const pins = pinsData ? JSON.parse(pinsData) : [];
+      console.log(`[StorageService] Pines cargados para usuario ${userId}:`, pins.length);
+      return pins;
+    } catch (error) {
+      console.error(`Error getting pins for user ${userId}:`, error);
       return [];
     }
   }

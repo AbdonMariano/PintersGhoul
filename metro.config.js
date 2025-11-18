@@ -7,6 +7,7 @@ const config = getDefaultConfig(__dirname);
 config.resolver = {
   ...config.resolver,
   sourceExts: Array.from(new Set([...(config.resolver?.sourceExts || []), 'jsx', 'js', 'ts', 'tsx'])),
+  assetExts: [...(config.resolver?.assetExts || []), 'png', 'jpg', 'jpeg', 'gif', 'webp'],
 };
 
 // Importante: NO reemplazar los polyfills por defecto; añadir el nuestro al final

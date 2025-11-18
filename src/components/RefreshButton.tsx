@@ -26,14 +26,12 @@ export default function RefreshButton({ onRefresh, isRefreshing = false }: Refre
 
       onRefresh();
 
-      // Stop rotation after 2 seconds
-      setTimeout(() => {
-        Animated.timing(rotateValue, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }).start();
-      }, 2000);
+      // Detener la rotación inmediatamente después de refrescar
+      Animated.timing(rotateValue, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
     }
   };
 
